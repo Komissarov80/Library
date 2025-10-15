@@ -85,13 +85,18 @@ public class LibraryConsoleUI {
                     System.out.println("Чтобы посмотреть книги читателя введите номер читателя");
                     int id = scan.nextInt();
                     library.showBooksOwner(id);
+                    continue;
+                }
+                case 7: {
+                    library.showBooksAllOwners();
+                    continue;
                 }
                 case 0: {
-                    System.out.println("Goodbay");
+                    System.out.println("До свидания ");
                     break;
                 }
                 default:
-                    System.out.println("Wrong comande");
+                    System.out.println("Не верная команда");
                     continue;
             }
             break;

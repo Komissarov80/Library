@@ -1,5 +1,7 @@
 package main;
 
+import org.w3c.dom.ls.LSOutput;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -94,12 +96,12 @@ public class Library {
 //                .filter(x -> x.getTitle().toLowerCase(Locale.ROOT).equals(title)).filter(x -> x.getYear() == year)
 //                .collect(Collectors.toList());
         if (map.isEmpty()) {
-            System.out.println("books by author " + author + " and by title " + title + " and by year " + year + " not found");
+            System.out.println("Книги автора " + author + " с названием " + title + " и " + year + " года выпуска не найдены");
             return;
         }
         boolean isavailable = map.values().size() > 1;
         if (!isavailable) {
-            System.out.println("There no available book");
+            System.out.println("Нет доступных книг");
             return;
         }
         makeChoise(map);
@@ -109,12 +111,12 @@ public class Library {
         Map<Integer, List<Book>> map = findBooksByPredicate(book -> book.getAuthor().equalsIgnoreCase(author) &&
                 book.getTitle().equalsIgnoreCase(title));
         if (map.isEmpty()) {
-            System.out.println("books by author " + author + " and by title " + title + " not found");
+            System.out.println("Книги автора " + author + " с названием " + title + " не найдены");
             return;
         }
         boolean isavailable = map.values().size() > 1;
         if (!isavailable) {
-            System.out.println("There no available book");
+            System.out.println("Нет доступных книг");
             return;
         }
         makeChoise(map);
@@ -123,12 +125,12 @@ public class Library {
     public void findBooksByAuthor(String author) {
         Map<Integer, List<Book>> map = findBooksByPredicate(book -> book.getAuthor().equalsIgnoreCase(author));
         if (map.isEmpty()) {
-            System.out.println("books by author " + author + " not found");
+            System.out.println("Книги автора " + author + " не найдены");
             return;
         }
         boolean isavailable = map.values().size() > 1;
         if (!isavailable) {
-            System.out.println("There no available book");
+            System.out.println("Нет доступных книг");
             return;
         }
         makeChoise(map);
@@ -137,12 +139,12 @@ public class Library {
     public void findBooksByTitle(String title) {
         Map<Integer, List<Book>> map = findBooksByPredicate(book -> book.getTitle().equalsIgnoreCase(title));
         if (map.isEmpty()) {
-            System.out.println("books by title " + title + " not found");
+            System.out.println("Книги с названием " + title + " не найдены");
             return;
         }
         boolean isavailable = map.values().size() > 1;
         if (!isavailable) {
-            System.out.println("There no available book");
+            System.out.println("Нет доступных книг");
             return;
         }
         makeChoise(map);
@@ -151,12 +153,12 @@ public class Library {
     public void findBooksByYear(int year) {
         Map<Integer, List<Book>> map = findBooksByPredicate(book -> book.getYear() == year);
         if (map.isEmpty()) {
-            System.out.println("books by year " + year + " not found");
+            System.out.println("книги " + year + " года выпуска не найдены");
             return;
         }
         boolean isavailable = map.values().size() > 1;
         if (!isavailable) {
-            System.out.println("There no available book");
+            System.out.println("Нет доступных книг");
             return;
         }
             makeChoise(map);
@@ -167,9 +169,9 @@ public class Library {
         Owner owner = null;
         int key = 1;
         for (Map.Entry<Integer, List<Book>> entry : foundBooks.entrySet()) {
-            System.out.println("number of book: " + entry.getKey() + " book: " + entry.getValue().get(0));
+            System.out.println("номер книги: " + entry.getKey() + " книга: " + entry.getValue().get(0));
         }
-        System.out.println("For choise book enter your id or 0 for registration");
+        System.out.println("Для продолжения введите ВАШ номер читателя или 0 для РЕГИСТРАЦИИ");
         int input = scan.nextInt();
         if (input == 0) {
             owner = createOwner();
@@ -178,16 +180,16 @@ public class Library {
             owner = getOwner(input);
         }
 
-        System.out.println("For choise book enter a number of book or 0 for finish");
+        System.out.println("Для выбора книги введите номер книги, или 0 для выхода");
         int number = scan.nextInt();
         while (number != 0) {
             if (number > bookMap.size() || number < 0) {
-                System.out.println("wrong book number try again or enter 0 for exit");
+                System.out.println("неверный номер книги, попробуйте еще раз или введите 0 для выхода");
                 number = scan.nextInt();
                 continue;
             }
             ownerGetBook(owner, number);
-            System.out.println("For choise book enter a number of book or 0 for finish");
+            System.out.println("Для выбора книги введите номер книги, или 0 для выхода");
             number = scan.nextInt();
         }
     }
@@ -333,9 +335,9 @@ public class Library {
             });
             libraryMap.computeIfAbsent(owner, k -> new ArrayList<>()).add(book);
             bookMap.get(keyBook).remove(index);
-            System.out.println("You get a book " + book);
+            System.out.println("Вы получили книгу " + book);
         } else {
-            System.out.println("There no book or owner with this id");
+            System.out.println("С таким номером нет книг или читателей");
         }
     }
 
@@ -354,12 +356,24 @@ public class Library {
     }
 
     public void showBooksOwner(int key) {
+        System.out.println("in showbooksowner " + libraryMap.get(key));
         libraryMap.entrySet().forEach(x -> {
-            System.out.print(x.getKey() + " : ");
+            System.out.print(x.getKey().getFirstName() + " "
+                    + x.getKey().getLastName() + " читает : ");
             for(Book b : x.getValue()) {
                 System.out.println(b);
             }
         });
     }
 
+    public void showBooksAllOwners() {
+        System.out.println("Книги всех читателей");
+        libraryMap.entrySet().forEach(x -> {
+            System.out.println(x.getKey().getFirstName() + " "
+                    + x.getKey().getLastName() + " читает: ");
+            for(Book book : x.getValue()) {
+                System.out.println(book);
+            }
+        });
+    }
 }
